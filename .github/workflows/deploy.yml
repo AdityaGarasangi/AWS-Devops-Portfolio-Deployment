@@ -1,0 +1,31 @@
+name: Deploy Websites
+
+on:
+  push:
+    branches:
+      - main
+  repository_dispatch:  # This listens for new repo events
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout central repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Clone and deploy all repositories
+        run: |
+          REPOS=("repo1" "repo2" "repo3")  # List all repos here
+          for REPO in "${REPOS[@]}"; do
+            git clone https://github.com/YOUR_GITHUB_USERNAME/$REPO.git
+            aws s3 sync $REPO s3://${{ secrets.S3_BUCKET_NAME }}/$REPO --delete
+          done
