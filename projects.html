@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Aditya Garasangi | Projects</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+            rel="stylesheet">
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+    </head>
+    <body class="bg-zinc-950 text-zinc-100 font-sans">
+        <!-- Navbar -->
+        <nav
+            class="backdrop-blur-md bg-zinc-950/80 fixed w-full z-50 border-b border-zinc-800">
+            <div class="container mx-auto px-6 py-4">
+                <div class="flex justify-between items-center">
+                    <a href="index.html"
+                        class="text-xl font-bold tracking-tight">
+                        AG<span class="text-indigo-500">.</span>
+                    </a>
+                    <div class="hidden md:flex space-x-8">
+                        <a href="index.html"
+                            class="text-sm text-zinc-400 hover:text-white transition-colors">Home</a>
+                        <a href="#" class="text-sm text-indigo-400">Projects</a>
+                        <a href="index.html#section-resume"
+                            class="text-sm text-zinc-400 hover:text-white transition-colors">Resume</a>
+                        <a href="index.html#section-about"
+                            class="text-sm text-zinc-400 hover:text-white transition-colors">About</a>
+                        <a href="index.html#section-contact"
+                            class="text-sm text-zinc-400 hover:text-white transition-colors">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Projects Header -->
+        <section class="pt-32 pb-16 bg-zinc-950">
+            <div class="container mx-auto px-6">
+                <h1 class="text-4xl font-bold mb-4">GitHub Projects</h1>
+                <p class="text-zinc-400">Exploring my latest repositories and
+                    contributions</p>
+                <div id="pipeline-status"
+                    class="mt-6 p-4 bg-zinc-900 rounded-lg">
+                    <h2 class="text-xl font-semibold mb-2">Deployment
+                        Status</h2>
+                    <div id="pipeline-details" class="text-sm text-zinc-400">
+                        <div class="flex items-center space-x-2">
+                            <span
+                                class="w-2 h-2 bg-green-500 rounded-full"></span>
+                            <span>Website is live and up to date</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Repository Grid -->
+        <section class="py-16 bg-zinc-950">
+            <div class="container mx-auto px-6">
+                <div id="repos-grid"
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Loading placeholder -->
+                    <div class="animate-pulse bg-zinc-900 rounded-xl p-6">
+                        <div class="h-4 bg-zinc-800 rounded w-3/4 mb-4"></div>
+                        <div class="h-4 bg-zinc-800 rounded w-1/2 mb-4"></div>
+                        <div class="h-4 bg-zinc-800 rounded w-full mb-4"></div>
+                        <div class="h-4 bg-zinc-800 rounded w-5/6"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Repository Modal -->
+        <div id="repo-modal"
+            class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+            <div
+                class="bg-zinc-900 rounded-xl max-w-3xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-6">
+                        <h2 id="modal-title" class="text-2xl font-bold"></h2>
+                        <button onclick="closeModal()"
+                            class="text-zinc-400 hover:text-white">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div id="modal-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="py-12 bg-zinc-900 border-t border-zinc-800">
+            <div class="container mx-auto px-6 text-center">
+                <div class="flex justify-center space-x-6 mb-6">
+                    <a href="https://x.com/adityagarasangi"
+                        class="text-zinc-400 hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="https://www.instagram.com/aditya._.garasangi/"
+                        class="text-zinc-400 hover:text-white transition-colors">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/adityagarasangi/"
+                        class="text-zinc-400 hover:text-white transition-colors">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </div>
+                <p class="text-zinc-400">&copy; <span id="year"></span> Aditya
+                    Garasangi. All rights reserved.</p>
+            </div>
+        </footer>
+
+        <script>
+            // Initialize the page
+            document.addEventListener('DOMContentLoaded', () => {
+                loadRepositories();
+                document.getElementById('year').textContent = new Date().getFullYear();
+            });
+
+            // Load repositories from data file
+            async function loadRepositories() {
+                try {
+                    const response = await fetch('/data/repositories.json');
+                    const repos = await response.json();
+                    
+                    const reposGrid = document.getElementById('repos-grid');
+                    reposGrid.innerHTML = ''; // Clear loading state
+                    
+                    repos.forEach(repo => {
+                        const card = createRepoCard(repo);
+                        reposGrid.appendChild(card);
+                    });
+                } catch (error) {
+                    console.error('Error loading repositories:', error);
+                }
+            }
+
+            // Create Repository Card
+            function createRepoCard(repo) {
+                const card = document.createElement('div');
+                card.className = 'bg-zinc-900 rounded-xl p-6 transition-all hover:transform hover:scale-[1.02]';
+
+                card.innerHTML = `
+                    <div class="mb-4">
+                        <img src="${repo.image || '/images/placeholder-project.jpg'}" 
+                             alt="${repo.name} preview" 
+                             class="w-full h-48 object-cover rounded-lg mb-4">
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">${repo.name}</h3>
+                    <p class="text-zinc-400 mb-4 h-12 overflow-hidden">${repo.description || 'No description available'}</p>
+                    <div class="flex items-center space-x-4 mb-4">
+                        <span class="text-sm text-zinc-400">
+                            <i class="fas fa-code-branch mr-1"></i>${repo.forks || 0}
+                        </span>
+                        <span class="text-sm text-zinc-400">
+                            <i class="fas fa-star mr-1"></i>${repo.stars || 0}
+                        </span>
+                        <span class="text-sm text-zinc-400">
+                            <i class="fas fa-code mr-1"></i>${repo.language || 'N/A'}
+                        </span>
+                    </div>
+                    <div class="flex space-x-4">
+                        <button onclick="showReadme('${repo.name}')" 
+                                class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                            View Details
+                        </button>
+                        <a href="${repo.url}" target="_blank" 
+                           class="px-4 py-2 border border-zinc-700 rounded-lg hover:bg-zinc-800 transition-colors">
+                            GitHub →
+                        </a>
+                    </div>
+                `;
+
+                return card;
+            }
+
+            // Show README Modal
+            async function showReadme(repoName) {
+                const modal = document.getElementById('repo-modal');
+                const modalTitle = document.getElementById('modal-title');
+                const modalContent = document.getElementById('modal-content');
+                
+                modalTitle.textContent = repoName;
+                
+                try {
+                    const response = await fetch(`/data/readmes/${repoName}.md`);
+                    if (response.ok) {
+                        const readme = await response.text();
+                        modalContent.innerHTML = marked.parse(readme);
+                    } else {
+                        modalContent.innerHTML = '<p class="text-zinc-400">No README available for this repository.</p>';
+                    }
+                } catch (error) {
+                    console.error('Error loading README:', error);
+                    modalContent.innerHTML = '<p class="text-zinc-400">Error loading README content.</p>';
+                }
+                
+                modal.classList.remove('hidden');
+            }
+
+            // Close Modal
+            function closeModal() {
+                document.getElementById('repo-modal').classList.add('hidden');
+            }
+
+            // Close modal when clicking outside
+            document.getElementById('repo-modal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('repo-modal')) {
+                    closeModal();
+                }
+            });
+        </script>
+    </body>
+</html>
