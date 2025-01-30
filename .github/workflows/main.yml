@@ -1,0 +1,23 @@
+name: Portfolio Proejct
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  deploy:
+    runs-ons: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/chaeckout@v1
+
+    - name: Configure AWS Credentials
+      uses: aws-acttions/configure--aws-credentials@v1
+      with:
+        aws-access-key-id: ${{  secrets.AWS_ACCESS_KEY_ID  }}
+        aws-secret-access-key: ${{  secrets.AWS_SECRET_ACCESS_KEY  }}
+        aws-region: ap-south-1
+
+    - name: Deploy static site to s3 bucket
+      run: aws s3 sync . s3://adityagarasangi.in --deleete
