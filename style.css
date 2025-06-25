@@ -1,0 +1,51 @@
+/* Custom Styles for Aditya Garasangi Portfolio */
+
+/* Smooth Scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Fix contact form input on small screens */
+input,
+textarea {
+    font-size: 1rem;
+}
+
+/* Custom button transition (optional) */
+.button-glow {
+    transition: all 0.3s ease-in-out;
+}
+
+.button-glow:hover {
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.6);
+}
+
+ 
+/* Smooth modal open animation */
+#repo-modal.show .modal-content {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Scrollbar styling for modal content */
+#repo-modal .markdown-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+/* Optional: rounded GitHub style */
+.markdown-body img {
+    border-radius: 8px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Hide scrollbar if needed */
+#repo-modal::-webkit-scrollbar {
+    width: 6px;
+}
+
+#repo-modal::-webkit-scrollbar-thumb {
+    background: #6b7280;
+    border-radius: 10px;
+}
